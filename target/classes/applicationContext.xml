@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<!-- spring的配置文件 -->
+	<!-- 配置spring-mybatis项目： 数据源 SqlSessionFactory mapper配置 事务管理 -->
+
+
+	<!-- 数据源 -->
+	<bean id="dataSource"
+		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver"></property>
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/shiro1?characterEncoding=utf-8"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="csj0221"></property>
+		<!-- 连接池最大数据库连接数 -->
+		<property name="maxActive" value="255"></property>
+		<!-- 最大等待连接数量 -->
+		<property name="maxIdle" value="5"></property>
+		<!-- 最大等待毫秒 -->
+		<property name="maxWait" value="10000"></property>
+	</bean>
+
+	<!-- sqlSessionFactory,class在spring-mybaits.jar中 -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation"
+			value="classpath:sqlMapConfig.xml"></property>
+	</bean>
+
+	<!-- 配置扫描mapper -->
+	<bean id="mapperScanner"
+		class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="shiro.mapper"></property>
+		<property name="sqlSessionFactoryBeanName"
+			value="sqlSessionFactory"></property>
+	<!-- annotationClass将注解为@Repository扫描为mapper对象，不加的话 默认basePackage下所有扫描为mapper 
+		<property name="annotationClass" value="org.springframework.stereotype.Repository"></property> 
+		-->
+		</bean> 
+	
+</beans>
+	
+	
+	
