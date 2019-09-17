@@ -1,38 +1,140 @@
-SpringAOPï¼šAspect Oriented Programming é¢å‘åˆ‡é¢ç¼–ç¨‹
-	è§£å†³é¢å‘å¯¹è±¡æ‰€ä¸èƒ½è§£å†³çš„æƒ…å†µï¼Œæ¯”å¦‚ï¼šæŸä¸€æ“ä½œåŒæ—¶æ¶µç›–ä¸¤ä¸ªå¯¹è±¡ï¼Œå¦‚èµ„é‡‘å’Œè®¢å•ï¼Œèµ„é‡‘å¢åŠ ä¸€ç¬”ï¼Œè®¢å•ä¹Ÿè¦å¢åŠ ï¼ŒäºŒè€…è¦ä¹ˆåŒæ—¶å®Œæˆï¼Œè¦ä¹ˆåŒæ—¶
-	å¤±è´¥ï¼›
-	SpringAOPçš„åº•å±‚å®ç°æ˜¯åŠ¨æ€ä»£ç†ï¼Œæ˜¯åŸºäºæ–¹æ³•çš„ï¼Œæ‰€ä»¥åˆ‡é¢åªèƒ½æ‹¦æˆªæ–¹æ³•
+-----------------------´«µİjsonºÍ±íµ¥ĞòÁĞ»¯Î´ÊµÏÖ£¬µÈ´ıjqury-----------------------------------
 
-SpringAOPä¸æ•°æ®åº“ç¼–ç¨‹ï¼š
-	æ•°æ®åº“çš„æµç¨‹åŒ…æ‹¬ï¼šæ•°æ®åº“è¿æ¥å’Œæ–­å¼€ï¼Œäº‹åŠ¡æ‰§è¡Œå’Œå›æ»šï¼Œå…¶ä¸­AOPå°†è¿™äº›å†…å®¹å°è£…ï¼Œè¿™æ ·å¼€å‘è€…åªéœ€è¦å°†ä»£ç é›†ä¸­äºä¸šåŠ¡æœ¬èº«ï¼Œä¸éœ€è¦è€ƒè™‘æ•°æ®åº“
-	è¿æ¥æˆ–æ–­å¼€ç­‰ï¼›
-	å€¼å¾—æŒ‡å‡ºçš„æ˜¯ï¼ŒSpringAOPä»…ä»…åœ¨æŠ›å‡ºunchecked exceptionå¼‚å¸¸æ—¶æ‰ä¼šå›æ»šäº‹åŠ¡ï¼Œunchecked exceptionåŒ…æ‹¬RuntimeExceptionåŠå…¶å­ç±»ï¼Œ
-	å½“ç›´æ¥æŠ›å‡ºExceptionæ—¶ä¸ä¼šå›æ»šï¼›
+ContextLoaderListener
+	¿ÉÒÔ³õÊ¼»¯SpringIoCÈİÆ÷(WebApplicationContext)£¬ÈİÆ÷µÄinitºÍdestoryµ÷ÓÃContextLoaderÖĞµÄ·½·¨£¬·½·¨µÄ¾ßÌåÊµÏÖÔÚContextLoader
+	ÖĞÍê³É¡£
+	WebApplicationContext½Ó¿Ú¼Ì³ĞApplicationContext,±¾Éí´ú±íÒ»¸öSpringIoCÈİÆ÷¡£
+	Èç¹ûÈ¡ÏûÊ¹ÓÃweb.xml£¬ĞèÒªÊÖ¶¯¼Ì³ĞWebApplicationInitializer£¬Ç°ÌáÊÇĞèÒªservlet 3.0+»·¾³¡£
+	
+DispatcherServlet
+	SpringmvcºËĞÄ×é¼ş£¬¿ÉÒÔÀ¹½ØHTTPÇëÇó£»±¾ÖÊÉÏÈÔÊÇÒ»¸öservlet;
+	DispatcherServletÔÚÊµÀı»¯µÄÊ±ºòĞèÒª´«ÈëwebApplicationContext
+	
+Êı¾İÄ£ĞÍ
+	Model¡¢ModelAndView¡¢ModelMap
+	ModelAndViewÖĞÓĞÒ»¸öÊôĞÔÊÇModelMap£¬ModelMap¼Ì³ĞLinkedHashMap£»
+	Model½Ó¿Ú£¬ÊµÏÖÀàExtendedModelMap£¬extend ModelMap£¬implement Model
+	Ä£ĞÍµÄaddAttribute()¡¢addObject()·½·¨£¬±¾ÖÊÉÏ¶¼ÊÇµ÷ÓÃhashMap.put(key,value)·½·¨
+	Ö®ËùÒÔ×Ü½áÕâ¸ö£¬ÊÇÔÚexcelÊÓÍ¼demoÖĞ£¬´«ÈëMap(String,Object)²ÎÊı¾Í¿ÉÒÔ»ñµÃ±£´æÔÚÄ£ĞÍÖĞµÄ("roleList",roleList)£¬È»ºó½«listÊı¾İ
+	·ÅÈëexcelÊÓÍ¼ÖĞ
 
-AOPæœ¯è¯­ï¼š
-	1.Aspectï¼š
-		åˆ‡é¢,å¯ç†è§£æˆä¸€ä¸ªæ‹¦æˆªå™¨ï¼Œå¯ä»¥å®šä¹‰advice,pointcutç­‰
-	2.Adviceï¼š
-		é€šçŸ¥ï¼Œåœ¨åˆ‡é¢ä¸­çš„æ–¹æ³•ï¼ŒåŒ…æ‹¬å‰ç½®é€šçŸ¥ã€åç½®é€šçŸ¥ã€ç¯ç»•é€šçŸ¥ç­‰ï¼Œå¯¹åº”ä»£ç†å¯¹è±¡çœŸå®é€»è¾‘æ‰§è¡Œå‰ã€å
-	3.PointCutï¼š
-		åˆ‡ç‚¹,æŒ‡å®šå¯åŠ¨æ‹¦æˆªçš„æ—¶æœºï¼Œå¦‚åœ¨æŒ‡å®šç±»çš„æ–¹æ³•æ‰§è¡Œæ—¶è¿›è¡Œæ‹¦æˆªï¼š
-		@PointCut("execution *(com.test.printRole(..))")
-			execution:ä¸€ç§æŒ‡ç¤ºå™¨ï¼Œä»£è¡¨æ‰§è¡Œæ–¹æ³•çš„æ—¶å€™ä¼šè§¦å‘ï¼Œå…¶ä»–æŒ‡ç¤ºå™¨within(),args()ç­‰ï¼›
-			*:ä»»æ„è¿”å›ç±»å‹çš„æ–¹æ³•
-			(..):ä»»æ„å‚æ•°
-	4.Introductionï¼šå¼•å…¥
-		@DeclaredParents(value="")
-		å¼•å…¥å…¶ä»–ç±»çš„æ–¹æ³•
-	5.Join pointï¼š
-		è¿æ¥ç‚¹ï¼Œå…·ä½“éœ€è¦æ‹¦æˆªçš„æ–¹æ³•ï¼ŒprintRole()æ–¹æ³•å°±æ˜¯ä¸€ä¸ªè¿æ¥ç‚¹
-	6.Weavingï¼š
-		ç»‡å…¥ï¼Œå°†åˆ‡é¢ç»‡å…¥ä»£ç†å¯¹è±¡çš„çœŸå®é€»è¾‘ä¹‹ä¸­
-æ³¨æ„ç‚¹ï¼š
-	SpringAOPåº•å±‚ä½¿ç”¨çš„ä»£ç†åº”è¯¥æ˜¯JDKåŠ¨æ€ä»£ç†ï¼ŒJDKåŠ¨æ€ä»£ç†æ˜¯åŸºäºæ¥å£çš„ï¼Œè¿™æ„å‘³ç€ï¼šåœ¨å¼•å…¥AOPè¦æ‹¦æˆªçš„beanæ—¶ï¼Œå¿…é¡»æ˜¯æ¥å£ï¼›
-	å¦‚åº”è¯¥æ˜¯RoleServiceï¼Œè€Œä¸æ˜¯RoleServiceImpl
+SpringMVC³õÊ¼»¯Á÷³Ì£º
+	SpringIoCÈİÆ÷(webApplicationContext)Ê×ÏÈ½øĞĞ³õÊ¼»¯£¬¹ı³ÌÖĞµ÷ÓÃonRefresh()·½·¨£¬½«SpringMVC¸÷¸ö×é¼ş³õÊ¼»¯£»
+	SpringIoC´´½¨Íê³Éºó£¬DispatcherServletÊµÀı»¯Ê±ĞèÒªÓÃµ½webApplicationContext
+
+SpringMVCÁ÷³Ì£º
+	HandlerMappingÊÇURIÓëHandlerÖ®¼äµÄ¶ÔÓ¦¹ØÏµ£¬¸øHandler¼ÓÈëÀ¹½ØÆ÷Ê¹Ö®¿ÉÒÔÔÚÀ¹½ØÆ÷Ç°ºó¼ÓÈë´úÂë£¬µÃµ½HandlerExecutionChain£»
+	µ±DispatcherServletÀ¹½Øµ½ÇëÇó£¬¸ù¾İHandlerMappingÕÒµ½¶ÔÓ¦µÄHandler£¬Í¨¹ıHandlerAdapterÖ´ĞĞHandlerExecutionChain£¬
+	Handler·µ»ØÏàÓ¦µÄÊı¾İÄ£ĞÍºÍÊÓÍ¼·µ»Ø¸øDispatcherServlet£¬DispatcherServlet½«ÊÓÍ¼·¢ËÍ¸øViewResolver£¬Èç¹ûÊÇÂß¼­ÊÓÍ¼£¬
+	ViewResolver½âÎöÊÓÍ¼²¢½«Ä£ĞÍäÖÈ¾µ½ÊÓÍ¼ÖĞ£¬Èç¹ûÊÇ·ÇÂß¼­ÊÓÍ¼...
+
+handler°üÀ¨controllerºÍÆäËû×é¼ş£¬±ÈÈçHttpMessageConvert£¬ÓÃÓÚ½øĞĞ¼òµ¥µÄÏûÏ¢×ª»»£¬½«Ô­Ê¼HTTP²ÎÊı×ª»»ÎªjavaÀàĞÍ£¬»òÕß½«controller
+½á¹û×ª»»ÎªÌØ¶¨ĞÎÊ½(ÈçResponseBody½«½á¹û×ª»»Îªjson)£¬¸ù¾İÇëÇóÍ·»òÏìÓ¦Í·µÄ'Accept'ÊôĞÔÀ´Æ¥ÅäÏàÓ¦µÄHttpMessageConvertÊµÏÖÀà£¬Èç
+MappingJackson2HttpMessageConvert£¬ÓÃÓÚjson¸ñÊ½µÄ×ª»»£»ÔÚspring³õÊ¼»¯µÄÊ±ºò£¬»á×Ô¶¯³õÊ¼»¯HttpMessageConvertÊµÏÖÀà
+HttpMessageConvertÖ»ÄÜ½øĞĞ¼òµ¥ÀàĞÍµÄ×ª»»£¬×ª»»Îªpojo£¬ÒªÓÃµ½convert£¬×ª»»Îª¼¯ºÏÓÃGenericConvert
+
+×ª»»Æ÷Converter
+	Converter½Ó¿ÚÓÃÓÚ¼òµ¥ÀàĞÍ×ª»»£¬Ö»ÓĞÒ»¸öconvert·½·¨£»
+	ConditionGenericConverter½Ó¿ÚÓÃÓÚ×ª»»Îª¼¯ºÏ£»
+	Spring×Ô¶¯Ìá¹©ÁË»ùÓÚConverterºÍConditionGenericConverter½Ó¿ÚµÄ×ª»»Àà£¬ÓÃÓÚ²»Í¬Êı¾İÀàĞÍµÄ×ª»»£¬ÄÜ¹»Âú×ã´ó¶àÒªÇó£¬Ò»°ã¶øÑÔ£¬²»Ğè
+	Òª×Ô¼º½øĞĞ×ª»»£»ÈÕÆÚÀàĞÍ×ª»»Æ÷Ò²Ö»ÊÇÊµÏÖstringºÍDate¶ÔÓ¦µÄÒ»ÖÖ·½Ê½¶øÒÑ¡£	
+	
+ÈÕÆÚÀàĞÍ×ª»»
+	1.ÔÚpojoÖĞµÄDateÊôĞÔÖĞ¼ÓÈë@DateTimeFormat(pattern="yyyy-MM-dd")×¢½â£¬ÕâÑùÖ»ÒªÇ°Ì¨µÄÊäÈëÈÕÆÚÎªyyyy-MM-ddÀàĞÍ¾ÍÄÜ¹»Ë³Àû×ª»»
+	ÎªjavaµÄDateÀàĞÍ
+	2.¼ÓÈëÈÕÆÚÀàĞÍ×ª»»Æ÷£¬
+		£¨1£©ÊµÏÖConverter½Ó¿Ú×ª»»£¬¶¨ÒåºÃcom.test.util.StringToDateConverterÖ®ºó£¬ÔÚxmlÖĞ×¢²áÖ®£»
+		£¨2£©Ê¹ÓÃ@InitBinder²Ù×÷HTTP²ÎÊı£¬@ControllerAdviceÊ¹È«¾ÖÅäÖÃÉúĞ§
+			ÖµµÃ×¢ÒâµÄÊÇspring3ºÍspring3Ö®ºó@InitBinderÊµÏÖµÄ·½Ê½ÓĞËù²»Í¬£¬Ô­ÒòÊÇ<mvc:annotation-driven>µÄrequest
+		MethodºÍrequest MappingµÄÄ¬ÈÏÊµÏÖÀà·¢Éú¸Ä±ä£¬ÓÉDefaultAnnotationHandlerMapping±äÎªRequestMappingHandlerMapping¡¢
+		AnnotationMethodHandlerAdapter --> 	RequestMappingHandlerAdapter£»
+		ÕâÀïÊÇspring3Ö®ºóµÄ·½·¨£¬Ö±½Ó@InitBinderĞŞ¸Ä²ÎÊı£¬@ControllerAdviceÓ¦ÓÃµ½È«¾Öcontroller£¬²»ĞèÒªÔÚxmlÖĞ¶¨Òåbean£»
+	
+È«¾ÖÒì³£´¦ÀíÆ÷£º
+	1.@ControllerAdvice+@ExceptionHandler
+		@ExceptionHandlerÖ»¸ºÔğÌø×ªÒì³£Ò³Ãæ£¬@ControllerAdviceÓÃÓÚÓ¦ÓÃÈ«¾Öcontroller
+		ÕâÀïÊÇ½«´íÎóĞÅÏ¢±£´æÔÚÊı¾İÄ£ĞÍÖĞ£¬È»ºóÔÚÇ°Ì¨ÓÃ${}È¡³ö£¬¸ü³ÉÊìµÄ·½·¨ÊÇ·µ»Ø¸øÇ°Ì¨Ò»ÖÂµÄjsonÊı¾İ£¬µÈ´ıÔÚÖªÍ¨demoÖĞÊµÏÖ
+		×¢Òâ£º±ØĞëÊÇcontrollerÅ×³öµÄÒì³£²Å¿ÉÒÔ²¶»ñ
+	2.ÊµÏÖHandlerExceptionResolver½Ó¿Ú	
+
+¹ú¼Ê»¯£º
+	1.localeResolver£ºSessionLocaleResolver¡¢CookieLocaleResolver£¬seesionÄ¬ÈÏ30·ÖÖÓÊ§Ğ§£¬cookie¿ÉÄÜ»á±»½ûÓÃ£»ÕâÀïÊÇ
+	SessionLocaleResolver£¬Èç¹ûÓĞcustom settingµÄ»°£¬»á¶ÁÈ¡sessionÖĞµÄlocale attribute£¬·ñÔòµÄ»°Ê¹ÓÃdefaultLocale£»
+	2.LocaleChangeInterceptor£¬À¹½ØÆ÷½Ó¿Ú£¬¼Ì³ĞHandlerInterceptorAdapter£¬¸´Ğ´preHandler()·½·¨£¬ÓÃÓÚÀ¹½Ølocale²ÎÊı
+	(×Ô¶¨ÒåÎªlanguage)ÅĞ¶Ïlocale£»doc:allows for changing the current locale on every request£»
+	3.messageSource£ºÓÃÓÚ¼ÓÔØ¹ú¼Ê»¯ÎÄ¼ş*.properties£¬ReloadableResourceBundleMessageSourceÖ§³ÖÈÈ¼ÓÔØ£¬ÉèÖÃ60·ÖÉ¨ÃèÒ»´Î
+	
+URI£ºUniform Resource Identifier£¬Í³Ò»×ÊÔ´±êÊ¶·û£¬identifier¾Í±íÃ÷ÊÇÓÃÀ´Î¨Ò»±êÊ¶×ÊÔ´µÄ£¬Ïàµ±ÓÚ×ÊÔ´µÄÎ¨Ò»µÄ¡¢²»»áÖØ¸´µÄÃû×Ö
+URL£ºUniform Resource Locator£¬Í³Ò»×ÊÔ´¶¨Î»·û£¬locator±íÃ÷ÊÇÓÃÀ´¶¨Î»×ÊÔ´µÄ£¬Í¨¹ıURL¾Í¿ÉÒÔÕÒµ½Õâ¸ö×ÊÔ´£¬URL¿ÉÒÔ¿´×÷ÊÇURIµÄÒ»¸ö×Ó¼¯
+
+Media Type£ºÃ½ÌåÀàĞÍ£¬Ò²½ĞMIMEÀàĞÍ£¬¼´HTTPĞ­ÒéÖĞµÄContent-type£¬°üÀ¨application/json,image/jpeg,multipart/form-datagµÈ
+
+UTF-8£¨8-bit Unicode Transformation Format£©,Íò¹úÂë£¬¿ÉÔÚÔÚÍøÒ³ÉÏ¿ÉÒÔÍ³Ò»Ò³ÃæÏÔÊ¾ÖĞÎÄ¼òÌå·±Ìå¼°ÆäËüÓïÑÔ£¨ÈçÓ¢ÎÄ£¬ÈÕÎÄ£¬º«ÎÄ£©
+
+Á½ÖÖÑéÖ¤·½Ê½£º
+	JSR 303×¢½â£¬ÑéÖ¤×¢½âÌá¹©µÄ¼òµ¥Âß¼­Èç@NotNull,@Pattern
+	Validator£¬ÑéÖ¤½Ï¸´ÔÓµÄÂß¼­£¬@InitBinder°ó¶¨ÑéÖ¤Æ÷
+	¶şÕß²»ÄÜÍ¬Ê±Ê¹ÓÃ£¬ÔÚ@InitBinder×¢½âÏÂ£¬Validator»á¸²¸ÇµôJSR
+
+excelÊÓÍ¼µÄÊ¹ÓÃ
+	WorkBookÀà¿ÉÓÃÓÚ´´½¨excel£¬ÊµÏÖÀàHSSFWorkBook´´½¨¡¢¹ÜÀí*.xls(2003ÒÔÇ°)£¬XSSFWorkBook´´½¨¡¢¹ÜÀí*.xlsx(2003ÒÔºó)
+	´´½¨sheetÖ®ºó´´½¨row£¬ÔÚÓÃrow´´½¨µ¥Ôª¸ñcreateCell(index),setCellValue("value"),index´Ó0¿ªÊ¼
+	workbook±¾Òâ¼´ÊÇ¹¤×÷²¾£¬ÓÃÓÚ´´½¨¡¢»ñÈ¡excel
+	×¢Òâ£ºÈç¹û²»½èÖúspringmvcµÄAbstractExcelViewÊÓÍ¼À´µ¼³öexcel£¬¿É×ÔĞĞ´´½¨HSSFWorkBook£¬ÓÃÎÄ¼şÁ÷output/input
+	¸´Ï°Á÷Ö®ºó£¬³¢ÊÔ£»
+	¿É²é¿´ÊéÇ©ÖĞµÄÍøÒ³ÊµÀı--------------------------------------------------------------------------------------------
+	
+-------------------------------------------lambda±í´ïÊ½Ñ§Ï°--------------------------------------------------------------
+
+ÎÄ¼şÉÏ´«£º
+	Á½ÖÖMultipartResolver£¬tandardServletMultipartResolver£¬ÒÀÀµservlet v3.0ÒÔ£»ommonsMultipartResolverÒÀÀµµÚÈı·½°ü
+
+×¢½â£º
+@RequestMapping£¬½«URIÓë·½·¨Ãû¹ØÁª
+@RequestParam£¬´ÓHTTPÇëÇóÖĞ»ñÈ¡²ÎÊı£¬Ä¬ÈÏ²ÎÊı²»ÄÜÎª¿Õ£¬µ×²ãÊµÏÖÎª£º
+	String idStr = request.getParameter("id");
+	Long id = Long.parseLong(idStr);
+²»Ìá³«¼ÓÈësession,reqest,response¶ÔÏó´«µİ²ÎÊı£¬½µµÍ¶ÔservletÈİÆ÷µÄÒÀÀµ£¬ ÍÆ¼öÊ¹ÓÃspringMVCÌá¹©µÄ×¢½â@RequestAttribute£º
+	@SessionAttribute£¬´ÓsessionÓòÖĞ»ñÈ¡ÊôĞÔ£¬@RequestAttributeÔÚreqeustÓòÖĞ»ñÈ¡ÊôĞÔ£»
+	@RequestParamºÍ@RequestAttribute£º
+		requestÓòÖĞÓĞprameterºÍattribute£¬parameterÊÇ¿Í»§(¶Ë)¾ö¶¨µÄ£¬attributeÊÇÍ¨¹ırequest.setAttributeÉèÖÃµÄ£»
+		¹Ê´Ë£¬parameterÖ»ÄÜrequest.getParam()£¬ÇÒµÃµ½µÄ½á¹ûÊÇstring£¬¶ø·Ç¶ÔÏó£¬²»ÄÜset£»attribute¿Éget¡¢set£¬¿ÉÎªÈÎÒâobject¶ÔÏó£»
+	@CookieValue¡¢@RequestHeader
+@PathVarible£¬ÔÚURLÖĞ´«µİ²ÎÊı
+@EnableWebMvc£¬Ò»¸ö³¬¼¶¸´ÔÓ¡¢ÖØÒªµÄ×¢½â£¬ÓÃÓÚ³õÊ¼»¯springmvc¸÷ÖÖ×é¼şµÄÊµÏÖÀà
+@ControllerAdvice,¿ØÖÆÆ÷ÔöÇ¿£¬docÖĞµÄÄÚÈİ£º
+	1.¾ßÓĞ@Controller×¢½âµÄ×÷ÓÃ
+	2.Ò»ÖÖÌØÊâµÄ@Component×¢½â£¬Í¨³£Óë@ExceptionHandler,@ModelAttribute,@InitBinder×¢½âÁªºÏÊ¹ÓÃ£¬¾­ÑéÖ®Ì¸£ºÓë@ExceptionHandler
+	×î³£ÓÃ£¬ÓÃÓÚ½¨Á¢È«¾Ö´¦ÀíÆ÷
+	3.basePackages="";Ö¸¶¨À¹½ØµÄcontrollerËùÔÚ°ü£¬@ControllerAdviceÕıÈçÆä×ÖÃæÒâË¼£¬ÄÜ¹»ÔÚÈ«¾ÖÒâÒåÉÏ¹ÜÀícontroller£¬ËùÒÔÊÇÒ»ÖÖ¿Ø
+	ÖÆÆ÷ÔöÇ¿
+@ModelAttribute£¬±»@ModelAttribute×¢ÊÍµÄ·½·¨»áÔÚ´ËcontrollerÃ¿¸ö·½·¨Ö´ĞĞÇ°±»Ö´ĞĞ
+	@ModelAttribute×¢½âµÄ·½·¨ÓĞ·µ»ØÖµ£¬·µ»ØÖµ»á±»±£´æÔÚÊı¾İÄ£ĞÍÖĞ£»
+	¿ÉÒÔÍ¨¹ımv.getModelMap().get(key)»òmodel.asMap().get(key)»ñÈ¡value
+	¿ÉÒÔÓÃÀ´±£´æËùÓĞcontroller¹«ÓÃµÄÊı¾İ£¬»òÕßÌáÇ°ĞèÒªÔ¤¼ÓÔØµÄÊı¾İ
+@ExceptionHandler
+	Èç¹û×¢½âÖĞÃ»ÓĞÖ¸¶¨Òì³££¬ÒÔ²ÎÊıÖĞµÄÒì³£ÎªÀ¹½ØÒì³£
+@ResponseStatus:code,¶¨ÒåHTTP´íÎóÂë£¬reason×Ô¶¨ÒåÔ­Òò
+@WebFilter ÉùÃ÷Ò»¸ö¹ıÂËÆ÷£¬¿ÉÒÔÅäÖÃvalueºÍurlPattern(À¹½ØµÄURL)
+
+-----------------------------------java web»ù´¡£¬HTTPĞ­Òé£¬ä¯ÀÀÆ÷cookieÏà¹Ø------------------------------------------
+	
+ÖØ¶¨ÏòºÍ×ª·¢£º
+	ÖØ¶¨ÏòÖÁÉÙÁ½´ÎÇëÇó¡¢Á½´ÎÏìÓ¦£¬ÕâÒâÎ¶×Å£¬ÖØ¶¨ÏòÇ°ºóÊÇÁ½¸ö²»Í¬µÄrequest¡¢response£¬¹ı³ÌÊÇä¯ÀÀÆ÷Ïò·şÎñ¶Ë·¢ËÍrequest1£¬·şÎñÆ÷½ÓÊÕºóµÃµ½
+	response1·¢ËÍ»Øä¯ÀÀÆ÷£¬ä¯ÀÀÆ÷Í¨¹ıresponse1ÖªµÀÔÙÏòĞÂµÄURLµØÖ··¢ËÍrequest2£¬µÃµ½ÏìÓ¦response2£»¹ÊÖØ¶¨ÏòÊÇ¿Í»§¶Ë²Ù×÷
+	×ª·¢Ö»ÓĞÒ»´ÎÇëÇó£¬Ò»´ÎÏìÓ¦£¬×ª·¢Ç°ºóÊÇÍ¬Ò»¸örequest,response£¬×ª·¢µÄ¹ı³ÌÊÇ£¬ä¯ÀÀÆ÷·¢ËÍrequest£¬·şÎñÆ÷¶Ë½ÓÊÕºó£¬Í¨¹ıÄÚ²¿×ª·¢¸øÆäËû·½
+	·¨´¦Àí´Ëreuqest£¬È»ºó½«ÏìÓ¦½á¹ûresponse·µ»Øä¯ÀÀÆ÷£»¹Ê×ª·¢ÊÇ·şÎñÆ÷¶Ë²Ù×÷
+	ÖØ¶¨ÏòºóurlµØÖ·»á·¢Éú¸Ä±ä£¬ÖØ¶¨ÏòÊÊÓÃÓÚ¿çÓò²Ù×÷£¬¿ÉÒÔÖØ¶¨Ïòµ½ÆäËûwebÈİÆ÷µÄ×ÊÔ´£¬×ª·¢Ö»ÄÜÔÚ±¾webÈİÆ÷ÖĞ½øĞĞ×ª·¢£»
+	ÖØ¶¨ÏòÁ½´ÎÇëÇó£¬Ğ§ÂÊµÍÓÚ×ª·¢
+	
+Tomcat:
+	ĞŞ¸ÄtomcatÅäÖÃÎÄ¼şserver.xml£¬ÆäÖĞ
+	<Host>ÓÃÓÚÅäÖÃĞéÄâÖ÷»ú
+	<Context>ÓÃÓÚÅäÖÃĞéÄâÖ÷»úÏÂµÄĞéÄâÄ¿Â¼
+
+
 	
 
-	
 
 
-	
+

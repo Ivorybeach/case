@@ -1,15 +1,36 @@
 package com.test.pojo;
 
-public class Role {
+import org.springframework.stereotype.Component;
 
+/** 
+* @ClassName: Role 
+* @Description: 
+* @author 王逍遥
+* @date 2018年7月12日 下午12:25:35 
+*/
+@Component
+public class Role {
+	private Integer id;
+	private String roleName;
 	private String note;
-	private String name;
-	public Role() {
-		// TODO Auto-generated constructor stub
+	public Role() {}
+	public Role(Integer id,String roleName,String note) {
+		this.id=id;
+		this.roleName=roleName;
+		this.note=note;
 	}
-	public Role(String name,String note) {
-		this.name = name;
-		this.note = note;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 	public String getNote() {
 		return note;
@@ -17,13 +38,5 @@ public class Role {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
 	
 }
