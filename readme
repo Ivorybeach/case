@@ -1,77 +1,95 @@
-事务管理器
-	底层接口PlatformTransactionManager，定义创建/获取事务、提交、回滚事务的方法，事务管理器使用其实现类DataSourceTransactionManager
-	在java config中，spring默认的事务管理器bean_name为transactionManager;
+redis可以用来做缓存，请求到来时，首先到redis中查询，如果redis中无数据，到数据库中查询，并将查询到的结果存入redis;
+redis可以处理高并发请求，如抢红包
 
-配置事务的方法
-	1.xml
-	2.@Transactional，注解在方法上；注解类，对类中所有方法生效
 
-声名式事务
-	@Transactional，用于定义事务
-	在使用@Transactional注解之前配置注解驱动，xml:<tx:annotation-driven transaction-manager="transactionManager"/>
-	java config:@EnableTransactionMangement
+Jedis是Redis官方推荐的Java连接开发工具：
+	JedisPool
+		jedis连接池；
+	JedisPoolConfig
+		Jedis提供的连接池配置；
+
+spring-data
+	spring提供的关于数据库持久层操作的工具：内涵多个子项目:Spring-data-redis;spring-data-jpa
+	注意：spring-data包存在版本匹配问题，出现莫名其妙的异常，基本都是jar包版本问题
+
+RedisTemplate:
+	接口RedisOperations的实现类；
+	spring提供的redis操作类：Helper class that simplifies Redis data access code
+	需要在其中配置：redis连接工厂(JedisConnectionFactory)、对象序列化器(RedisSerializer)
+
+JedisConnectionFactory:
+	Spring提供了四种redis连接工厂;
+	最常使用的是JedisConnectionFactory；类中封装了JedisPool的创建，所以只需要向JedisConnectionFactory传递JedisPoolConfig
+	即可创建使用连接池的redis连接；
+
+RedisSerializer:
+	普通连接无法直接将java对象存入redis，需要用到序列化器RedisSerializer；
+	过程：pojo需要实现Serilization接口，java对象在存入redis时序列化，将数据从redis中取出，反序列化为java对象；
+	Spring提供了多种序列化器，常用的两种：
+	JdkSerializationRedisSerializer
+		可用于对象的序列化，要注意中文乱码问题（通常是linux_redis的问题）；如果pojo采用StringRedisSerializer会报类型转换错误；
+	StringRedisSerializer
+		可用于字符串的序列化；
 	
-TransactionDefination
-	接口，定义propagation,isolation常量，获取事务名称、propagatin、isolation、readOnly等的内容，其实现类可以用来保存事务信息
-
-Spring事务管理流程：
-	SpringIoC容器初始化时，扫描@Transactional注解内容，将对事务的定义保存在TransactionDefination的实现类中，容器运行时，利用AOP拦截
-	@Transactional标注的类或方法，并将定义在TransactionDefination中的内容设置到相应的方法上
-
-spring对数据库事务的约定：
-	数据库连接与关闭、事务的回滚与提交，都通过AOP，交给Spring容器完成，开发者只需要关注业务本身
-
-数据库事务ACID：
-	1.原子性：Atomicity，事务中的所有操作，要么同时完成，要么同时不完成，事务中一旦出现错误，事务中的所有内容都会回滚到执行前的状态；
-	2.一致性：Consistency，针对多个事务并发的情况，保证系统始终处于一致的状态，比如多个事务操纵同一份数据，数据总量500，不论每个事务如何操
-	作此数据，其总量500保持一致；
-	3.隔离性：Isolation，两个事务之间的隔离程度，用于描述两个事务之间的关系，比如事务A能否在B提交前读取B事务的内容；
-	4.持久性：Durability，事务一旦执行完毕，其对数据的改变会永久保存在数据库中；
+SessionCallBack 
+	保证SessionCallBack中的多个命令在一个redis连接中；
 	
-隔离级别：Isolation
-	由SQL的标准规范定义，java|spring引用继承此规范
-	在TransactionDefination中定义ISOLATION_DEFAULT，默认隔离级别沿用所使用的数据默认隔离级别，mysql支持四种隔离级别，默认为可重复读，
-ocacle只支持读/写提交和序列化两种，默认读/写提交；经常使用的隔离级别：读/写提交
-	1.脏读：dirty read，事务A能够读取事务B未提交的事务，这样的场景称为脏读；
-	2.读/写提交：read commit，事务A只能读取事务B已经提交的数据，会产生不可重复读问题(unrepeatable read)；
-		不可重复读：事务A多次读取同一数据，事务B在事务A多次读取的过程中，对数据作了更新并提交，导致事务A多次读取同一数据时，导致结果不一致，
-		针对update/delete操作，解决可以用锁锁住目标行，锁住之后，不可以update|delete，insert又不造成不可重复读问题，所以解决；
-	3.可重复读：repeatable read，注意是针对数据库的同一条记录，可重复读使同一条数据的读写操作按照序列化进行，解决不可重复读，导致幻读；
-		幻读：phantom read，A在T1时刻查询到10条记录，在T4时刻打印10条，B在T2,T3时刻增加一条，最后A打印的结果为11条，多出的一条如同幻觉，
-		称为幻读，幻读针对insert操作，解决用锁锁住表；
-	4.序列化：Seralizable，注意是针对多条数据库记录，将多条数据库记录按照同一个序列化进行，解决幻读；
-以上四种级别，性能依次降低，在高并发事务中，如果选择Serlazibale隔离级别会严重影响性能，因此在并发量不大的情况下，为保证数据的安全性，可以考
-虑Serlizable，但是在互联网高并发系统中，通常采用读/写提交；
+redis数据结构
+	string:
+		key-value格式，可以是字符串、整型、浮点型
+	hash:
+		hash本身有一个key，通过key可以唯一确定这个hash，内部储存为field-value格式，适用于储存对象
+		实际上内部所有的数据存储类型都是string
+		所以使用的redisSerilizer为StringRedisSerializer
+	linked-list:
+		双向链表，有序，可以从链表的左端或右端添加或遍历数据，链表结构意味着读的速度慢，因为链表只能从某一个方向一个一个去找数据，
+		插入和删除性能高，要注意的是插入/删除的数据大小，因为这将损耗性能，可以分批进行
+		链表的存储是分散的，各块之间通过节点来连接，此节点保存了下一节点的信息，因此在链表中查询时，只能按照节点的次序依次去查找，速度
+		很慢，当插入和删除时却可以直接进行
+		因为是双向，所以有左操作和右操作之分，即从左向右或从右向左
+	set:
+		集合是无序的、不能重复添加，移除单个元素，检查一个元素是否存在于集合中，计算交集，并集，差集，从集合里面随机
+		获取元素
+	zset:
+		有序集合，里面的元素除了value之外，还有score，score是浮点型，redis支持按score大小对元素顺序进行排列，可添加，获取，删除
+		单个元素，根据分值范围(range)或者成员来获取元素。
+	
+lua
+	lua操作redis原子性：redis确保一条script脚本执行期间，其它任何脚本或者命令都无法执行;
+	正是由于script执行的原子性，所以我们不要在script中执行过长开销的程序，否则会验证影响其它请求的执行;
+	在Lua脚本中调用redis命令： redis.call('set', 'foo', 'bar')
+	redis-cli调用Lua脚本： redis-cli --eval path/to/redis.lua KEYS[1] KEYS[2] , ARGV[1] ARGV[2]
+	1、Lua脚本可以在redis单机模式、主从模式、Sentinel集群模式下正常使用，但是无法在分片集群模式下使用。（脚本操作的key可能不在同一个分片）
+    2、Lua脚本中尽量避免使用循环操作（可能引发死循环问题），尽量避免长时间运行。
+    3、redis在执行lua脚本时，默认最长运行时间时5秒，当脚本运行时间超过这一限制后，Redis将开始接受其他命令但不会执行（以确保脚本的原子性，
+          因为此时脚本并没有被终止），而是会返回“BUSY”错误。
 
-传播行为：Propagation
-	常使用的传播行为：REQUIRED
-	REQUIRED:当前方法不存在事务，创建新的事务，如果已经存在事务，沿用当前事务；
-	REQUIRES_NEW:无论当前是否存在事务，都创建新的事务执行方法；
-	NESTED:嵌套事务，如果调用方法抛出异常之回滚方法内部执行的SQL，主方法的SQL不会回滚，也就是当前方法事务与主方法事务是两个不同事务，与
-	REQUIRES_NEW相似，差别在于，NESTED支持savepoint保存点，如果数据库本身支持savepoint，事务可以回滚到savepoint;
+Redis事务：
+	事务命令：MULTI EXEC DISCARD WATCH UNWATCH
+	MULTI：将命令放入队列
+	EXEC:执行队列中的命令
+	DISCARD：事务回滚，清除事务队列，退出事务，注意的是，当事务中一系列命令中，出现命令错误的情况，事务将会全部回滚，但如果出现数据格式错误（比如ince一个string
+	型数据），事务不会全部回滚，只是出现错误的命令报错不予执行
+		有一个问题，DISCARD到底是事务回滚，还是只是不执行命令？
+	WATCH:监控指定的key，值得注意的是，watch判定的不只是数据前后是否一致，还包括中间值的判断，如果中间值出现变化（包括从value1编程value1），
+	也会判定为出现变化
 	
-@Transactional自调用失效：
-	@Transactional与SpringAOP配合进行事务管理，如果SpringAOP底层实现是JDK动态代理，这意味着对于static和非public方法，AOP不能拦截，
-	因此事务管理失效；此外，如果当前类中的方法调用当前类中的方法，即自调用，AOP同样不能拦截，事务管理也会失效；
-	
-过长时间占用事务：
-	注意事务的处理应该在service层，此外，service层不应该有占用时间长的其他操作，如果有，在执行长时间操作时，会导致@Transactional注解的方
-	法长时间不能释放事务，这对数据库资源是严重浪费。
-	
-错误使用service:
-	注意：@Transactional标注的方法，执行时会开启一个事务，事务执行完毕，关闭事务；
-	错误实例：com.test.controller.RoleController
+流水线：
+	允许客户端一次将多个命令请求发送给服务器， 并将被执行的多个命令请求的结果在一个命令回复中全部返回给客户端
+	减少客户端发送多个命令给服务器时连接建立断开的次数
+	如果命令中有错误的命令，不会影响其他命令的执行
+	pipeline是客户端提供的功能，不同的客户端实现pipeline的方式不同
 
-错误捕捉异常：
-	在Spring事务管理的约定中：@Transactional标注的方法抛出RuntimeException及其子类异常，则回滚事务；
-	如果使用try..catch语句捕获异常，但在catch{}中并未throw异常，则Spring将不能拦截到异常，也就无法回滚事务；
-	
-遗漏点：如何用java配置、xml的方式更改@Transaction默认拦截的异常
-	
-	
+发布订阅
+	PUBLISH:向某个频道发布消息，返回值为接收该消息的订阅者数量
+	SUBSCRIBE:监听某个频道，返回值包括客户端订阅的频道，以及收到的消息
 
-
-
-	
+超时命令
+	EXPIRE:设置超时时间命令
+	如果redis的键值对超时了，不会立即对其进行回收，只是标识超时的键值对
+	这样的机制基于的考虑是：如果一个很大的键值对如list或hash结构超时，回收需要很长时间，浪费性能，这样的机制同样可能导致无用键值对占据大量
+	内存空间的问题
+	超时回收机制：1.定时回收：在确定的某个时间触发，回收超时的键值对，当然是在服务器空闲时
+			2.惰性回收：被标识超时的键值对再次用get命令访问，则redis将其从内存中清空
 	
 	

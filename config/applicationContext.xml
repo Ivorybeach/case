@@ -11,56 +11,44 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
-	<!-- spring的配置文件 -->
-	<!-- 配置spring-mybatis项目： 数据源 SqlSessionFactory mapper配置 事务管理 -->
-
-
-	<!-- 数据源 -->
-	<bean id="dataSource"
-		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
-		<property name="driverClassName"
-			value="com.mysql.jdbc.Driver"></property>
-		<property name="url"
-			value="jdbc:mysql://localhost:3306/test03?characterEncoding=utf-8"></property>
-		<property name="username" value="root"></property>
-		<property name="password" value="csj0221"></property>
-		<!-- 连接池最大数据库连接数 -->
-		<property name="maxActive" value="255"></property>
-		<!-- 最大等待连接数量 -->
-		<property name="maxIdle" value="5"></property>
-		<!-- 最大等待毫秒 -->
-		<property name="maxWait" value="10000"></property>
-	</bean>
-
-	<!-- sqlSessionFactory,class在spring-mybaits.jar中 -->
-	<bean id="sqlSessionFactory"
-		class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"></property>
-		<property name="configLocation"
-			value="classpath:sqlMapConfig.xml"></property>
-	</bean>
-
-	<!-- 配置扫描mapper -->
-	<bean id="mapperScanner"
-		class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.test.mapper"></property>
-		<property name="sqlSessionFactoryBeanName"
-			value="sqlSessionFactory"></property>
-	<!-- annotationClass将注解为@Repository扫描为mapper对象，不加的话 默认basePackage下所有扫描为mapper 
-		<property name="annotationClass" value="org.springframework.stereotype.Repository"></property> 
-		-->
-		</bean> 
-
-	<!-- 事务管理器，事务管理采用注解的方式 -->
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource"></property>
-	</bean>
-	<!-- 注解定义事务 -->
-	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!-- spring配置jedis -->
 	
-	<!-- service bean -->
-	<bean id="roleService" class="com.test.service.impl.RoleServiceImpl"></bean>
-	<bean id="roleListService" class="com.test.service.impl.RoleListServiceImpl"></bean>
+	<!-- jedisPoolConfig -->
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<!-- 最大空闲数 -->
+		<property name="maxIdle" value="50"></property>
+		<!-- 最大连接数 -->
+		<property name="maxTotal" value="100"></property>
+		<!-- 最大等待时间 -->
+		<property name="maxWaitMillis" value="20000"></property>
+	</bean>
+	
+	<!-- Spring提供的连接工厂 -->
+	<bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="hostName" value="192.168.1.111"></property>
+		<!-- 
+		<property name="hostName" value="192.168.43.11"></property> -->
+		<property name="port" value="6379"></property>
+		<!-- 无密码
+		<property name="password" value=""></property> 
+		-->
+		<!-- jedisPoolConfig，作为创建Jedis的参数 -->
+		<property name="poolConfig" ref="poolConfig"></property>
+	</bean>
+	
+	<!-- redisSerlizier -->
+	<bean id="jdkSerializationRedisSerializer" class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"></bean>
+	<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+	<!-- redisTemplate -->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="connectionFactory"></property>
+		<!-- key序列化器 -->
+		<property name="keySerializer" ref="stringRedisSerializer"></property>
+		<!-- value序列化器 -->
+		<property name="valueSerializer" ref="stringRedisSerializer"></property>
+		<!-- 默认序列化器 -->
+		<property name="defaultSerializer" ref="stringRedisSerializer"></property>
+	</bean>
 </beans>
 	
 	

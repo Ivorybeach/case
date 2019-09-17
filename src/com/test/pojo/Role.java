@@ -1,29 +1,26 @@
 package com.test.pojo;
 
-import org.springframework.stereotype.Component;
+import java.io.Serializable;
 
-/** 
-* @ClassName: Role 
-* @Description: 
-* @author 王逍遥
-* @date 2018.7.12 12:25:35 
-*/
-@Component
-public class Role {
-	private Integer id;
+public class Role implements Serializable{
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Long id;
 	private String roleName;
-	private String note;
-	public Role() {}
-	public Role(Integer id,String roleName,String note) {
+	public Role(long id,String roleName) {
 		this.id=id;
 		this.roleName=roleName;
-		this.note=note;
 	}
-	
-	public int getId() {
+	public Role() {
+	}
+	public Long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getRoleName() {
@@ -32,11 +29,6 @@ public class Role {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
-	public String getNote() {
-		return note;
-	}
-	public void setNote(String note) {
-		this.note = note;
-	}
+	
 	
 }
