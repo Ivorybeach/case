@@ -1,22 +1,28 @@
 package com.test.pojo;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-//@@Component会被扫描成一个bean,@Value注解依赖注入
-@Component	
 public class Role {
-
-	@Value("hehe")
-	private String name;
-	@Value("haha")
+	private int id;
+	private String roleName;
 	private String note;
-	
-	public String getName() {
-		return name;
+	public Role() {
+		// TODO Auto-generated constructor stub
 	}
-	public void setName(String name) {
-		this.name = name;
+	public Role(int id,String roleName,String note) {
+		this.roleName=roleName;
+		this.note=note;
+	}
+
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 	public String getNote() {
 		return note;

@@ -1,60 +1,73 @@
-Spring IoC: Inversion of Control
-	控制反转是一种设计思想，即把对象交给容器去管理，当需要使用对象时从容器中取出；对象不是由自己去建立(实例化)的，而是交给容器去完成；
-	举例在开发过程中：有财务和订单两个模块，两个模块分别将各自的内容发布到IoC容器中，假如财务想要获取订单的内容时，不需要考虑订单是如何实
-	现的，只需要对订单做出描述，容器就会根据描述自动创建订单对象;	
-DI：Dependency Injection，依赖注入，和IoC思想相辅相成，是将依赖注入到SpringIoC容器中，容器在创建对象时需要利用注入的依赖；
+sqlSessionFactoryBuilder
+	构建sqlSessionFactory，分步构建的Builder模式，根据Configuration来生成sqlSessionFactory；创建sqlSessionFactory后即可销毁；
+	sqlSessionFactoryBuilder.build()底层调用是defaultSqlSessionFactory构造方法，通过传入Configuration对象来构建sqlSessionF;
 
-ApplicationContext
-	一个底层接口，有多个实现类，常见的有:
-	ClassPathXmlApplicationContext:用于xml方式初始化spring容器；
-	AnnotationConfigApplicationContext:注解的方式初始化spring容器；
-	web项目使用webApplicationContext初始化容器；
+Configuration:
+	XMLConfigBuilder解析配置的xml文件（包括mapper.xml），将解析的内容存放入Configuration对象中，Configuration中包括mapperRegistry,
+	TypeHandlerRegistry等组件以及、与配置文件中配置项所对应的java属性；
+	可以通过configuration获取mapperRegistry等组件，进而可以获取与mapper有关的信息；
+	用于保存mapper.xml信息的组件：
+		1.MappedStatement：
+			保存mapper的所有信息，包括类型select|update..、parameterType、resultType、sql_id等等
+		2.sqlSource:
+			属于MappedStatement的一个属性，但sqlSource只是一个接口，其下有实现类，其实现类只有一个方法getBoundSql()，用于获取boundSql
+		3.BoundSql:
+			通过sqlSource.getBoundSql()方法解析sql之后得到的sql和sql参数
 	
-BeanFactory
-	底层接口，最重要的方法是getBean()方法，可以通过bean_name或类型去获取bean；isSingleton()判断是否单例模式，如果返回true的话，则在
-	此容器中同一个bean只能有唯一一个实例；
+BoundSql的三个属性：
+	1.parameterObject：代表参数本身，用于储存参数；
+		值得注意的是：传递多个参数时，如果无@Param注解，则parameterObject默认存储参数的形式为map:{1,value1},{2,value2}或
+		{param1,value1},{param2,value2}，获取时#{1}或#{param1}；加入@Param("key1")后，即可通过#{key1}获取
+	2.parameterMappings：保存参数的描述信息如jdbcType,javaType,typeHandler等等
+	3.sql：SqlSource解析后的sql
 	
-Bean的生命周期：
-	Bean的生命周期包括其从定义到创建到销毁的过程，在整个过程中其生命周期是通过许多方法控制的，通过复写这些方法，能够在Bean的生命周期中加
-	入自己的逻辑
-	Bean的定义：注意仅仅是Bean的定义，并未创建Bean的实例
-	1.Resource定位，SpringIoC扫描配置文件(xml或java配置)；2.BeanDefination，将读取Resource的结果保存在BeanDefination
-	中；3.将BeanDefination发布到SpringIoC容器
+sqlSessionFactory
+	sqlSession工厂，工厂模式、单例模式，用SqlSessionFactory.builder()来构造，默认实现类defaultSqlSessionFactory；
+	相当于数据连接池，所以只能有一个实例，生命周期存在于整个web应用；
+	在defaultSqlSessionFactory中有关于query等的方法，这些方法其实是交给Executor类去实现的；
 	
-依赖注入的方法：
-	1.Constructor注入
-	2.setter注入，默认的注入方式，容器创建Bean实例默认使用setter注入
-	3.接口注入（JNDI注入dataSource）
+sqlSession
+	相当于jdbc中一个Connnection对象，可以直接发送sql;也可以获取mapper接口，通过mapper发送sql；提供事务管理(commit提交、rollback回滚)；
+	存在于一个业务请求中，此业务结束后，关闭sqlSession，释放数据库资源；
+	值得注意的是，这只是一个门面接口，真正的业务逻辑实现在Executor类中
 
-Bean的装配：
-	1.xml装配，第三方类主要使用的装配方式，就是传统的ssm项目使用的xml配置文件
-	2.注解装配Bean：
-		@Component，被注解的类会被自动扫描成Bean，只能注解类
-		@ComponentScan(basePackages=({"",""})，指定扫描@Component的位置，basePackages是数组；
-		@Bean，可以注解在方法上，方法返回对象被注册成Bean；
-		@Configuration，注解在包含有@Bean注解的配置类上，标志此类为配置类；
-			有种说法：@Configuration理解成xml中的<beans>标签，@Bean为<bean>标签；
-	3.自动装配：
-		@Autowired；
-		解决@Autowired的歧义问题：比如引入的是接口RoleService roleService，如果RoleService有多个实现类的话，@Autowired会产生
-		歧义，解决方法是使用@Qualifier注解：
-		@Qualifier，标注要引入的实现类，栗子：
-			@Autowired
-			@Qualifier("roleService3")
-		原理是，@Autowired注解中，springIoC默认采用的是按Type的方法进行注入，使用@Qualifier就是告诉容器用getName()的方法去注入；
-		
-其他注解：
-	@ImportResource("classpath:sqlMapConfig.xml")	引入xml配置文件；
-	@Import({*.class},{*.class})	引入java配置；
-	@Profile	定义数据库开发环境，比如环境可以分为dev和test；也可以用xml配置；
-	@PropertySource(value=({classpath:db.properties},{*.properties}))	加载.properties配置文件；
-		对应xml:<context:property-placeholder location="classpath：db.properties">	
-	@Conditional	条件化装配Bean，这个就略了吧。。。
+Executor
+	query,update等的真正实现类，defaultSqlSessionFactory只是调用Executor类的方法而已；
+	可以调度StatementHandler,ParameterHandler,ResultSetHandler
+	1.StatementHandler---执行数据库的Statement(preparedStatement)操作
+	2.ParameterHandler---处理sql参数
+	3.ResultSetHandler---进行数据集ResultSet的处理,将resultSet转换为list
 
-Bean的作用域：
-	1.singleton单例：默认配置，在整个applicationContext中，只生成唯一一个bean实例；
-	2.prototype原型：每次从SpringIoC容器中获取Bean时都会重新创建实例；
-	3.session：web应用中，在一个session范围内只会创建一个实例；
-	4.request：web应用中，在一个request域中（一次request请求）只创建一个实例；
+SQLMapper
+	映射器，执行SQL，将执行结果与pojo映射；映射器只是接口，底层用动态代理进行实现；生命周期与sqlMapper保持一致，只在一个数据库连接中；
+	自动映射：sql中列名或别名与pojo中的属性一致；驼峰映射：
+	resultMap:resultMap的主要作用在于提供级联(assoation,collection)支持和typeHandler支持，在级联查询中只能使用resultMap映射；
+	sql中获取参数的方式：#{},${}或contact()
+	动态代理调用关系sqlSession.getMapper()->defaultSqlSession->configuration->mapperRegistry->MapperProxyFactory
+	即动态代理的实现在mapperRegistry类中引用的MapperProxyFactory类下的newProxyInstance()方法
 	
-		
+TypeAlias
+	别名配置，使用TypeAliasRegistry注册别名，mybatis本身已经自动提供了别名，如在mapper中定义parameterType=map，map即是Map.class
+	的别名
+	需要指出的是，mybatis的许多配件的注册方法都与TypeAlias一致，比如有typeHandlerRegistry
+	
+TypeHandler
+	类型转换器，负责jdbcType和javaType的转换，mybatis提供了注册类TypeHandlerRegistry，与TypeAlias相似；mybatis本身提供的转换器有
+	StringTypeHandler(char|varchar,string)
+	
+缓存
+	一级缓存：基于sqlSession的缓存，在一个sqlSession范围内，数据可以共享；默认开启；
+	二级缓存：基于sqlSessionFactory的缓存，针对namespace，同一个namespace下的sqlSession之间数据共享；开启二级缓存在mapper.xml中加
+	入</cache>,insert,update,delete操作会清空所在namespace下的全部缓存
+
+延迟加载：
+	开启：在<setting>中配置
+	
+加一个mapperScanner--------------------------------------------------------
+	------------------------------------------------mybatis分页插件-------------------------------------------------
+	
+	
+	
+	
+	
+	
