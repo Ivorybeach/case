@@ -1,3 +1,7 @@
+ssm搭的知通网站
+值得提一嘴的是，java调用了一个猫脸识别的python脚本。在Mr.Cat的登录的时候，会调用摄像头，如果是猫脸，就可以认证成功并登录。
+猫脸识别使用python的opencv模块写的，使用的特征识别器为opencv自带，准确率堪忧。
+
 java调用python脚本：
 
 	Runtime:
