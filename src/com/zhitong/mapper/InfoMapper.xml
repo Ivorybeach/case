@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhitong.mapper.InfoMapper">
+
+	
+
+	<insert id="addInfo"
+		parameterType="com.zhitong.pojo.Information">
+		insert into
+		t_information(id,name,institution,phone,qq,group_,sex,introduction,major)
+		values 
+		(#{id},#{name},#{institution},#{phone},#{qq},#{group_},#{sex},#{introduction},#{major})
+	</insert>
+	
+	<!-- 查询单条信息，用作测试 -->
+	<select id="getInfo" parameterType="com.zhitong.pojo.Information" resultType="com.zhitong.pojo.Information">
+		select * from t_information where id = 1559642603822
+	</select>
+	
+	<!-- 查询所有 -->
+	<select id="findAll" resultType="com.zhitong.pojo.Information">
+		select * from t_information
+	</select>
+
+	<!-- findAllByPage -->
+	<select id="findAllByPage" resultType="com.zhitong.pojo.Information">
+		select * from t_information limit #{currentPage},#{pageCount}
+	</select>
+	
+	<!-- getCount -->
+	<select id="getCount" resultType="int">
+		select count(*) from t_information
+	</select>
+	
+</mapper>

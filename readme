@@ -1,64 +1,12 @@
-shiro使用过程：
-	1.在web.xml中配置shiro的fliter
-	2.在spring的配置文件中配置ShiroFliterFactoryBean，全局权限配置
-		shiro过滤器：
-		anno：匿名访问，不需要验证就可以访问
-		authc：认证一次才可以访问，认证之后不需要再认证就可以访问
+ssm做的知通网站
+值得一提的是，这个项目有个猫脸识别登录功能，可以调用电脑摄像头，如果识别到是猫脸，就可以成功登录
+猫脸识别是一个python脚本，用python的openCV模块实现的，用的是openCV自带的特征识别器，准确率堪忧
+
+java调用python脚本：
+
+	Runtime:
+		代表java application正在运行时的类，可以通过获取此类实例，即可在java application运行时执行其他外部程序
+	
+	Processor:
+		执行其他程序，并且能获取其他程序的状态，是否执行完毕，通过输入流、输出流来获取程序运行的结果
 		
- CredentialsMatcher
- 	作用是用来匹配用户名与密码
-		
-shiroFliter:
-	实现类：ShiroFliterFactoryBean
-	是用来拦截需要安全控制的URL，类似于springmcv的dispatcherServlet，都是用来拦截URL；
-	shiroFliter可以判断当前用户，是否具有访问URL的权限
-
-DelegatingFilterProxy：
-	在web.xml中配置的的fliter，DelegatingFilterProxy会在spring容器中查找上述shiroFliter的Bean，并将所有操作交给shiroFliter
-	执行；
-	
-shiro与缓存：
-	shiro权限查询数据量大，有必要对权限进行缓存，因此shiro要与缓存框架(ehcache,redis)一起使用；
-	
-securityManager
-	shrio核心，需要注入realm和缓存；
-	
-AuthenticationInfo：represent already-verified and stored account data
-AuthenticationToken：represents data submitted for any given login attempt
-
-principal:
-	安全术语，例如username,userid，任何能够表示subject/user的都可以认为是principal
-	
-AuthenticationInfo
-	包括principle,
-
-AuthorizationInfo
-	存储roles和permissions信息
-	
-总结流程：
-	首先，web.xml中配置的DelegatingFilterProxy在应用启动的时候，在spring容器中找bean_shiroFliter，shiroFliter的作用是对URL
-	进行拦截，其中定义了拦截URL的规则，以及shiro最重要的组件securityManager，securityManager中包含自定义的realm,realm的作用是
-	得到认证的结果，认证的结果将作为URL拦截的依据
-	
-	
-UsernamePasswordToken、AuthenticationToken
-	这两个token貌似是一回事，在loginController中，将接收到username,password参数存入UsernamePasswordToken中，username可以作为
-	principal，password作为credential，注意的是credential的类型为Object
-	
-Subject:
-	从subject的outline中可以看到，其方法都是与role,permission,priciple,session等认证相关的内容
-	
-session访问过程
-	首先浏览器第一次访问服务器，服务器的response headers中有一个setCookie，返回cookie给浏览器,cookie中带上jsessionid；
-	之后浏览器再一次访问服务器，request headers中会带上Cookie，内容为jsessionid
-	当request进入web容器，根据reqest获取session时，如果web容器中存在session则返回，如果不存在，web容器则创建一个session。
-	然后返回response时，将sessonId作为response的head一并返回给客户端或者浏览器。
-	
-	
-	
-	
-	
-	
-	
-	
-	

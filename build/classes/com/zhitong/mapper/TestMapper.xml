@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhitong.mapper.TestMapper">
+	
+	<select id="findInfo" resultType="com.zhitong.pojo.Information">
+		select * from t_information where id = 1535880505614
+	</select>
+	
+</mapper>

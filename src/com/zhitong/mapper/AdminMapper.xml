@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhitong.mapper.AdminMapper">
+
+	<!-- 查询admin -->
+	<select id="selectAdmin" resultType="com.zhitong.pojo.Admin">
+		select admin_name as
+		adminName,password,email,adminPhone,message,country,id,picpath from t_admin where admin_name=#{adminName} and
+		password=#{password}
+	</select>
+
+	<!-- 添加admin -->
+	<insert id="addAdmin" parameterType="com.zhitong.pojo.Admin">
+		insert into
+		t_admin(id,admin_name,password,email) values
+		(#{id},#{adminName},#{password},#{email})
+	</insert>
+
+	<!-- 更新admin -->
+	<update id="updateAdmin" parameterType="com.zhitong.pojo.Admin">
+		update t_admin set
+		email=#{email},adminPhone=#{adminPhone},message=#{message},country=#{country}
+		where id=#{id}
+	</update>
+	
+	<!-- 存入图片路径 -->
+	<update id="updatePicpath">
+		update t_admin set
+		picpath = #{picpath} 
+		where
+		id = ${id}
+	</update>
+</mapper>
