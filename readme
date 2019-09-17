@@ -1,0 +1,38 @@
+SpringAOP：Aspect Oriented Programming 面向切面编程
+	解决面向对象所不能解决的情况，比如：某一操作同时涵盖两个对象，如资金和订单，资金增加一笔，订单也要增加，二者要么同时完成，要么同时
+	失败；
+	SpringAOP的底层实现是动态代理，是基于方法的，所以切面只能拦截方法
+
+SpringAOP与数据库编程：
+	数据库的流程包括：数据库连接和断开，事务执行和回滚，其中AOP将这些内容封装，这样开发者只需要将代码集中于业务本身，不需要考虑数据库
+	连接或断开等；
+	值得指出的是，SpringAOP仅仅在抛出unchecked exception异常时才会回滚事务，unchecked exception包括RuntimeException及其子类，
+	当直接抛出Exception时不会回滚；
+
+AOP术语：
+	1.Aspect：
+		切面,可理解成一个拦截器，可以定义advice,pointcut等
+	2.Advice：
+		通知，在切面中的方法，包括前置通知、后置通知、环绕通知等，对应代理对象真实逻辑执行前、后
+	3.PointCut：
+		切点,指定启动拦截的时机，如在指定类的方法执行时进行拦截：
+		@PointCut("execution *(com.test.printRole(..))")
+			execution:一种指示器，代表执行方法的时候会触发，其他指示器within(),args()等；
+			*:任意返回类型的方法
+			(..):任意参数
+	4.Introduction：引入
+		@DeclaredParents(value="")
+		引入其他类的方法
+	5.Join point：
+		连接点，具体需要拦截的方法，printRole()方法就是一个连接点
+	6.Weaving：
+		织入，将切面织入代理对象的真实逻辑之中
+注意点：
+	SpringAOP底层使用的代理应该是JDK动态代理，JDK动态代理是基于接口的，这意味着：在引入AOP要拦截的bean时，必须是接口；
+	如应该是RoleService，而不是RoleServiceImpl
+	
+
+	
+
+
+	
