@@ -1,31 +1,21 @@
 package com.test.main;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.session.SqlSession;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.test.mapper.RoleMapper;
 import com.test.pojo.Role;
-import com.test.util.SqlSessionFactoryUtils;
+import com.test.service.RoleService;
 
+//查询，测试读/写提交隔离级别
+//可查看日志输出，transactional sqlSession，说明事务生效；
 public class Main {
-
-	public static void main(String[] args) {
-		SqlSession sqlSession = null;
-		
-		sqlSession=SqlSessionFactoryUtils.openSqlSession();
-		//sqlSession获取mapper
-		RoleMapper roleMapper = sqlSession.getMapper(RoleMapper.class);
-		//查询
-		Role role = roleMapper.findRole("hehe","haha");
-		//插入
-		//Role role2 = new Role(11232343,"usernmdfd","nam994");
-		//Mybatis会自动返回insert成功数
-		//System.out.println(roleMapper.insertRole(role2));
-		System.out.println(role.getNote()+"----------------");
-		System.out.println(role.getRoleName()+"----------------");
-		//业务结束后，关闭sqlSession
-		sqlSession.close();
-				
-	}
 	
+	
+	public static void main(String[] args) {
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		RoleService roleService = ctx.getBean(RoleService.class);
+		Role role = roleService.getRoleById(1L);
+		System.out.println(role.getRoleName()+"--------------------");
+		ctx.close();
+		
+	}
 }
